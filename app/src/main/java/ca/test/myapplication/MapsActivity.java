@@ -10,16 +10,26 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 
-public class MapsActivity extends FragmentActivity  implements LocationListener {
+import java.util.Vector;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+public class MapsActivity extends FragmentActivity  implements LocationListener, GoogleMap.OnCameraChangeListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LocationManager locationManager;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
+
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +38,7 @@ public class MapsActivity extends FragmentActivity  implements LocationListener 
         setUpMapIfNeeded();
         locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
+        scheduler.schedule(new LoadBusStopData(this), 0, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -76,6 +87,7 @@ public class MapsActivity extends FragmentActivity  implements LocationListener 
         //start with overview of edmonton
         LatLng EDMONTON = new LatLng(53.5333, -113.5);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(EDMONTON, 10));
+        mMap.setOnCameraChangeListener(this);
     }
 
     @Override
@@ -83,7 +95,6 @@ public class MapsActivity extends FragmentActivity  implements LocationListener 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
-        locationManager.removeUpdates(this);
     }
 
     @Override
@@ -99,5 +110,18 @@ public class MapsActivity extends FragmentActivity  implements LocationListener 
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+        float zoom = mMap.getCameraPosition().zoom;
+        if(zoom >= 15) {//not great
+            VisibleRegion vr = mMap.getProjection().getVisibleRegion();
+            try {
+                scheduler.schedule(new PlotBusStopsRunnable(this, mMap, vr.latLngBounds), 0, TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                ;
+            }
+        }
     }
 }
