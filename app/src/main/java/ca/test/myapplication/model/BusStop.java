@@ -1,4 +1,4 @@
-package ca.test.myapplication;
+package ca.test.myapplication.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;

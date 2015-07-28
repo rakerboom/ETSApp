@@ -12,15 +12,15 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.VisibleRegion;
 
-import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import ca.test.myapplication.gtfs.Stops;
+
 
 public class MapsActivity extends FragmentActivity  implements LocationListener, GoogleMap.OnCameraChangeListener {
 
@@ -39,7 +39,7 @@ public class MapsActivity extends FragmentActivity  implements LocationListener,
         setUpMapIfNeeded();
         locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
-        dataLoader.schedule(new LoadBusStopData(this), 0, TimeUnit.MILLISECONDS);
+        dataLoader.execute(new Stops(this));
     }
 
     @Override

@@ -1,15 +1,17 @@
 package ca.test.myapplication;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.VisibleRegion;
 
 import java.util.Vector;
+
+import ca.test.myapplication.gtfs.Stops;
+import ca.test.myapplication.model.BusStop;
 
 /**
  * Created by rakerboom on 7/28/15.
@@ -30,7 +32,7 @@ public class PlotBusStopsRunnable implements Runnable {
     @Override
     public void run()
     {
-        Vector<BusStop> busStops = BusStopData.BusStopData;
+        Vector<BusStop> busStops = Stops.data;
         for(int i=0;i<busStops.size();i++)
         {
             final BusStop busStop = busStops.elementAt(i);
@@ -42,6 +44,7 @@ public class PlotBusStopsRunnable implements Runnable {
                             Marker marker = mMap.addMarker(new MarkerOptions()
                                     .position(busStop.getLatLng())
                                     .draggable(false)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                                     .title(busStop.getNumber() + ""));
                             busStop.setMarker(marker);
                         }
