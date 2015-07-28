@@ -38,26 +38,27 @@ public class PlotBusStopsRunnable implements Runnable {
             {
                 activity.runOnUiThread(new Runnable() {
                     public void run() {
-                        Marker marker = mMap.addMarker(new MarkerOptions()
-                                .position(busStop.getLatLng())
-                                .draggable(false)
-                                .title(busStop.getNumber() + ""));
-                        busStop.setMarker(marker);
-
+                        if(busStop.getMarker() == null) {
+                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                    .position(busStop.getLatLng())
+                                    .draggable(false)
+                                    .title(busStop.getNumber() + ""));
+                            busStop.setMarker(marker);
+                        }
                     }
                 });
             }
             else
             {
-                final Marker marker = busStop.getMarker();
-                if(marker != null) {
-                    activity.runOnUiThread(new Runnable() {
-                        public void run() {
+                activity.runOnUiThread(new Runnable() {
+                    public void run() {
+                        final Marker marker = busStop.getMarker();
+                        if(marker != null) {
                             marker.remove();
                             busStop.setMarker(null);
                         }
-                    });
-                }
+                    }
+                });
             }
         }
     }

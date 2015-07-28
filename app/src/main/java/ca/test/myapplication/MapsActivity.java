@@ -29,6 +29,7 @@ public class MapsActivity extends FragmentActivity  implements LocationListener,
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
 
+    private final ScheduledExecutorService dataLoader = Executors.newScheduledThreadPool(1);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Override
@@ -38,7 +39,7 @@ public class MapsActivity extends FragmentActivity  implements LocationListener,
         setUpMapIfNeeded();
         locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
-        scheduler.schedule(new LoadBusStopData(this), 0, TimeUnit.MILLISECONDS);
+        dataLoader.schedule(new LoadBusStopData(this), 0, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -112,13 +113,16 @@ public class MapsActivity extends FragmentActivity  implements LocationListener,
 
     }
 
+    private ScheduledFuture scheduledFuture;
+
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         float zoom = mMap.getCameraPosition().zoom;
         if(zoom >= 15) {//not great
             VisibleRegion vr = mMap.getProjection().getVisibleRegion();
             try {
-                scheduler.schedule(new PlotBusStopsRunnable(this, mMap, vr.latLngBounds), 0, TimeUnit.MILLISECONDS);
+                if(scheduledFuture != null) scheduledFuture.cancel(true);
+                scheduledFuture = scheduler.schedule(new PlotBusStopsRunnable(this, mMap, vr.latLngBounds), 0, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 ;
             }
