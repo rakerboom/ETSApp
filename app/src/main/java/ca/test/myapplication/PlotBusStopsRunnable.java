@@ -32,36 +32,36 @@ public class PlotBusStopsRunnable implements Runnable {
     @Override
     public void run()
     {
-        Vector<BusStop> busStops = Stops.data;
-        for(int i=0;i<busStops.size();i++)
-        {
-            final BusStop busStop = busStops.elementAt(i);
-            if(busStop.isVisible(visibleBounds))
-            {
-                activity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        if(busStop.getMarker() == null) {
-                            Marker marker = mMap.addMarker(new MarkerOptions()
-                                    .position(busStop.getLatLng())
-                                    .draggable(false)
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                                    .title(busStop.getNumber() + ""));
-                            busStop.setMarker(marker);
+        synchronized (Stops.data) {
+            Vector<BusStop> busStops = Stops.data;
+            for (int i = 0; i < busStops.size(); i++) {
+                final BusStop busStop = busStops.elementAt(i);
+                if (busStop.isVisible(visibleBounds)) {
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (busStop.getMarker() == null) {
+                                Marker marker = mMap.addMarker(new MarkerOptions()
+                                        .position(busStop.getLatLng())
+                                        .draggable(false)
+                                                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
+                                        .title(busStop.getNumber() + "")
+                                        .snippet(busStop.getRouteString()));
+                                busStop.setMarker(marker);
+                            }
                         }
-                    }
-                });
-            }
-            else
-            {
-                activity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        final Marker marker = busStop.getMarker();
-                        if(marker != null) {
-                            marker.remove();
-                            busStop.setMarker(null);
+                    });
+                } else {
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            final Marker marker = busStop.getMarker();
+                            if (marker != null) {
+                                marker.remove();
+                                busStop.setMarker(null);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     }

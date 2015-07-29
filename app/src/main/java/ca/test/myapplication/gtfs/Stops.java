@@ -28,20 +28,30 @@ public class Stops implements Runnable {
     @Override
     public void run()
     {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.stops);
+        synchronized (data) {
+            InputStream inputStream = context.getResources().openRawResource(R.raw.stops);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        try {
-            reader.readLine();//throw first line away
-            //stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station, routes,
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] array = line.split(",");
-                //String[] routes = array[10].split(":");
-                data.add(new BusStop(Integer.parseInt(array[0].trim()), array[2].trim(), Double.parseDouble(array[4].trim()), Double.parseDouble(array[5].trim())));
+            try {
+                reader.readLine();//throw first line away
+                //stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station, routes,
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] array = line.split(",");
+                    String[] routes = array[9].split(":");
+                    BusStop busStop = new BusStop(Integer.parseInt(array[0].trim()), array[2].trim(), Double.parseDouble(array[4].trim()), Double.parseDouble(array[5].trim()));
+                    for(int i=0;i<routes.length;i++)
+                    {
+                        String route = routes[i].trim();
+                        route = route.substring(0, route.length()-4);
+                        busStop.addRoute(Integer.parseInt(route));
+                    }
+                    data.add(busStop);
+                }
+            } catch (Exception e) {
+                System.out.println("Failed to load data.");
             }
-        } catch (IOException e) {
         }
     }
 
