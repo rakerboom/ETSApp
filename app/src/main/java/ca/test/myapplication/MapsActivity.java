@@ -5,6 +5,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,6 +15,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.VisibleRegion;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -29,8 +31,9 @@ public class MapsActivity extends FragmentActivity  implements LocationListener,
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
 
-    private final ScheduledExecutorService dataLoader = Executors.newScheduledThreadPool(1);
+    private final Executor dataLoader = Executors.newScheduledThreadPool(1);
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture scheduledFuture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +92,16 @@ public class MapsActivity extends FragmentActivity  implements LocationListener,
         LatLng EDMONTON = new LatLng(53.5333, -113.5);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(EDMONTON, 10));
         mMap.setOnCameraChangeListener(this);
+        Toast.makeText(this, "Waiting for Location", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        updateCamera(location);
+    }
+
+    private void updateCamera(Location location)
+    {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         mMap.animateCamera(cameraUpdate);
@@ -113,12 +122,10 @@ public class MapsActivity extends FragmentActivity  implements LocationListener,
 
     }
 
-    private ScheduledFuture scheduledFuture;
-
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
         float zoom = mMap.getCameraPosition().zoom;
-        if(zoom >= 15) {//not great
+        if(zoom >= 15) {
             VisibleRegion vr = mMap.getProjection().getVisibleRegion();
             try {
                 if(scheduledFuture != null) scheduledFuture.cancel(true);

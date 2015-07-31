@@ -40,13 +40,7 @@ public class Stops implements Runnable {
                 while ((line = reader.readLine()) != null) {
                     String[] array = line.split(",");
                     String[] routes = array[9].split(":");
-                    BusStop busStop = new BusStop(Integer.parseInt(array[0].trim()), array[2].trim(), Double.parseDouble(array[4].trim()), Double.parseDouble(array[5].trim()));
-                    for(int i=0;i<routes.length;i++)
-                    {
-                        String route = routes[i].trim();
-                        route = route.substring(0, route.length()-4);
-                        busStop.addRoute(Integer.parseInt(route));
-                    }
+                    BusStop busStop = new BusStop(Integer.parseInt(array[0].trim()), array[2].trim(), Double.parseDouble(array[4].trim()), Double.parseDouble(array[5].trim()), routes);
                     data.add(busStop);
                 }
             } catch (Exception e) {

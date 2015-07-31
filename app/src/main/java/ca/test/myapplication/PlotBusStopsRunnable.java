@@ -40,13 +40,7 @@ public class PlotBusStopsRunnable implements Runnable {
                     activity.runOnUiThread(new Runnable() {
                         public void run() {
                             if (busStop.getMarker() == null) {
-                                Marker marker = mMap.addMarker(new MarkerOptions()
-                                        .position(busStop.getLatLng())
-                                        .draggable(false)
-                                                //.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
-                                        .title(busStop.getNumber() + "")
-                                        .snippet(busStop.getRouteString()));
+                                Marker marker = mMap.addMarker(busStop.getMarkerOptions());
                                 busStop.setMarker(marker);
                             }
                         }
