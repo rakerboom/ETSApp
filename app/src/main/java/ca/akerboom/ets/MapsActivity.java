@@ -1,4 +1,4 @@
-package ca.test.myapplication;
+package ca.akerboom.ets;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,7 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import ca.test.myapplication.gtfs.Stops;
+import ca.akerboom.ets.gtfs.Stops;
 
 
 public class MapsActivity extends FragmentActivity  implements LocationListener, GoogleMap.OnCameraChangeListener {

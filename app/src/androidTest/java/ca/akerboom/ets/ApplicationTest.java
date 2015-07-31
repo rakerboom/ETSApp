@@ -1,4 +1,4 @@
-package ca.test.myapplication;
+package ca.test.ets;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

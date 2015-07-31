@@ -25,3 +25,13 @@ proguard/
 
 # Log Files
 *.log
+
+# Android Studio
+.idea/misc.xml
+
+# Mac
+.DS_Store
+
+# Google Maps Api Key
+app/src/debug/res/values/google_maps_api.xml
+app/src/release/res/values/google_maps_api.xml

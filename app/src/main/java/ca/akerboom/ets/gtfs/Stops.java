@@ -1,15 +1,14 @@
-package ca.test.myapplication.gtfs;
+package ca.akerboom.ets.gtfs;
 
 import android.content.Context;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Vector;
 
-import ca.test.myapplication.R;
-import ca.test.myapplication.model.BusStop;
+import ca.akerboom.ets.R;
+import ca.akerboom.ets.model.BusStop;
 
 /**
  * Created by rakerboom on 7/28/15.

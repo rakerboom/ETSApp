@@ -1,17 +1,15 @@
-package ca.test.myapplication;
+package ca.akerboom.ets;
 
 import android.app.Activity;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Vector;
 
-import ca.test.myapplication.gtfs.Stops;
-import ca.test.myapplication.model.BusStop;
+import ca.akerboom.ets.model.BusStop;
+import ca.akerboom.ets.gtfs.Stops;
 
 /**
  * Created by rakerboom on 7/28/15.

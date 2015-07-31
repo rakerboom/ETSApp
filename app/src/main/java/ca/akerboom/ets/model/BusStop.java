@@ -1,4 +1,4 @@
-package ca.test.myapplication.model;
+package ca.akerboom.ets.model;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -6,11 +6,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
-
-import ca.test.myapplication.R;
+import ca.akerboom.ets.R;
 
 /**
  * Created by rakerboom on 7/28/15.
